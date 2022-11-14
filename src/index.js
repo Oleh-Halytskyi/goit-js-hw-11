@@ -1,7 +1,7 @@
 import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import getData from './js/getData'
+import {getData} from './js/getData'
 let getEl = selector => document.querySelector(selector);
 
 getEl('.search-form').addEventListener('submit', getImg);
@@ -12,14 +12,7 @@ const options = {
    page: 1,
 }
 
-const { height: cardHeight } = document
-  .querySelector(".gallery")
-  .firstElementChild.getBoundingClientRect();
 
-window.scrollBy({
-  top: cardHeight * 2,
-  behavior: "smooth",
-});
 
 async  function getImg() {
    event.preventDefault()
@@ -28,13 +21,13 @@ async  function getImg() {
    const dataResponse = await getData(options.searchValue, options.page);
    const arr = dataResponse.hits
    options.page += 1;
-   markup(arr);
-   showButton();
-
+   
    if (arr.length === 0) {
       Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+      getEl('.gallery').innerHTML = '';
    } else{
       Notiflix.Notify.success(`Hooray! We found ${dataResponse.totalHits} images.`);        
+      markupFirstDownload(arr);
    }
    const lightbox = new SimpleLightbox('.gallery a', {});
 }
@@ -48,36 +41,79 @@ async function loadingNext(searchValue, page) {
       return
    }
    options.page += 1;
-   markup(arr);
+   markupNextDownload(arr);
    const lightbox = new SimpleLightbox('.gallery a', {});
 }
 
-function markup(arr) {
+function markupFirstDownload(arr) {
    
    const render = arr.map(({webformatURL,largeImageURL, tags, likes, views, comments, downloads})=> {
       return`
-      <a href="${largeImageURL}">
       <div class="photo-card">
-         <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+         <a href="${largeImageURL}">
+            <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+         </a>   
          <div class="info">
             <p class="info-item">
-               <b>Likes</b>${likes}
+               <b>Likes</b>
+               <span>${likes}</span>
             </p>
             <p class="info-item">
-            <b>Views</b>${views}
+            <b>Views</b><span>${views}</span>
             </p>
             <p class="info-item">
-            <b>Comments</b>${comments}
+            <b>Comments</b><span>${comments}</span>
             </p>
             <p class="info-item">
-            <b>Downloads</b>${downloads}
+            <b>Downloads</b><span>>${downloads}</span>
             </p>
             </div>
-      </div>
-      </a>`
+      </div>`
    }).join('');
          
-   getEl('.gallery').insertAdjacentHTML("beforeend", render)
+   getEl('.gallery').innerHTML = render;
+   showButton();
+   
+   const { height: cardHeight } = document
+   .querySelector(".gallery")
+   .firstElementChild.getBoundingClientRect();
+
+   window.scrollBy({
+   top: cardHeight * 1,
+   behavior: "smooth",
+   });
+   
+}
+
+function markupNextDownload(arr) {
+   
+   const render = arr.map(({webformatURL,largeImageURL, tags, likes, views, comments, downloads})=> {
+      return`
+      <div class="photo-card">
+         <a href="${largeImageURL}">
+            <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+         </a>   
+         <div class="info">
+            <p class="info-item">
+               <b>Likes</b>
+               <span>${likes}</span>
+            </p>
+            <p class="info-item">
+            <b>Views</b><span>${views}</span>
+            </p>
+            <p class="info-item">
+            <b>Comments</b><span>${comments}</span>
+            </p>
+            <p class="info-item">
+            <b>Downloads</b><span>>${downloads}</span>
+            </p>
+            </div>
+      </div>`
+   }).join('');
+         
+   getEl('.gallery').insertAdjacentHTML("beforeend", render);
+
+   
 }
       
 function resetPage() {

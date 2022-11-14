@@ -1,0 +1,29 @@
+.load-more {
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    min-width: 8em;
+    margin: 10px auto 0 auto;
+
+
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1em;
+    line-height: 1.88;
+    letter-spacing: 0.06em;
+
+    border-radius: 4px;
+    border: none;
+    background-color: var(--accent-color);
+    color: var(--white-clr);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+
+    transition: background-color var(--time) var(--cubic);
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+        background-color: var(--background-button-hover);
+    }
+}
+

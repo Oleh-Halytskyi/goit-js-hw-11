@@ -3,6 +3,7 @@
     justify-content: center;
 
     text-align: center;
+    border-radius: 4px;
 }
 
 .form__wrapper{
@@ -10,6 +11,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    margin-bottom: 10px;
 
     background-color: blue;
 }
